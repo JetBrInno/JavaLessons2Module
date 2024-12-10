@@ -5,6 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.inno.course.player.model.Player;
 import ru.inno.course.player.service.PlayerService;
@@ -14,12 +18,35 @@ public class AddPlayerTest {
 
     private final String playerName = "Jack";
 
-    @Test
-    public void canCreateUser() throws IOException {
-        Files.deleteIfExists(Path.of("./data.json")); // предусловие
+    private PlayerService service;
 
-        PlayerService service = new PlayerServiceImpl();
-        int playerId = service.createPlayer(playerName);
+    private int playerId;
+
+    @BeforeEach
+    public void setUp() {
+        service = new PlayerServiceImpl();
+        playerId = service.createPlayer(playerName);
+        System.out.println("before each");
+    }
+
+    @BeforeAll
+    public static void setUpGlobal(){
+        System.out.println("before all");
+    }
+
+    @AfterAll
+    public static void tearDownGlobal(){
+        System.out.println("after all");
+    }
+
+    @AfterEach
+    public void tearDown() throws IOException {
+        Files.deleteIfExists(Path.of("./data.json"));
+        System.out.println("after each");
+    }
+
+    @Test
+    public void canCreateUser() {
         Player player = service.getPlayerById(playerId);
         assertEquals(player.getId(), playerId);
         assertEquals(playerName, player.getNick());
@@ -31,11 +58,7 @@ public class AddPlayerTest {
     // 3. Нечитабельные проверки
 
     @Test
-    public void cantCreateDuplicatePlayerName() throws IOException {
-        Files.deleteIfExists(Path.of("./data.json")); // предусловие
-        PlayerService service = new PlayerServiceImpl(); // предусловие
-        service.createPlayer(playerName); // предусловие
-
+    public void cantCreateDuplicatePlayerName() {
         assertThrows(IllegalArgumentException.class, () -> service.createPlayer(playerName));
     }
 }
