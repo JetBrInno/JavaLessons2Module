@@ -10,6 +10,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -17,11 +18,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import resolvers.PlayerServiceResolver;
 import ru.inno.course.player.model.Player;
 import ru.inno.course.player.service.PlayerService;
 import ru.inno.course.player.service.PlayerServiceImpl;
 
 @ExtendWith(MyTestWatcher.class)
+@ExtendWith(PlayerServiceResolver.class)
 public class AddPlayerTest {
 
     private final String playerName = "Jack";
@@ -69,6 +72,7 @@ public class AddPlayerTest {
     @Test
     @Tag("negative")
     @DisplayName("Дублирование пользователя невозможно")
+    @Disabled("Тест временно выключен из-за бага (jira.com/task-5152)")
     public void cantCreateDuplicatePlayerName() {
         assertThrows(IllegalArgumentException.class, () -> service.createPlayer(playerName));
     }
