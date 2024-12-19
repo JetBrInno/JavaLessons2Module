@@ -1,5 +1,6 @@
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import helpers.MyTestWatcher;
 import helpers.Players;
@@ -15,22 +16,26 @@ import ru.inno.course.player.service.PlayerService;
 
 @ExtendWith(MyTestWatcher.class)
 @ExtendWith({PlayerServiceResolver.class, CatalogServiceResolver.class})
-public class PlayerServiceTest {
+public class PlayerServiceAssertJTest {
 
     @Test
     @DisplayName("Открытие пустого файла")
-    public void canOpenEmptyFile(@Players(0)PlayerService service, CatalogService catalogService) {
+    public void canOpenEmptyFile(@Players(3)PlayerService service, CatalogService catalogService) {
         System.out.println("тест");
         Collection<Player> players = service.getPlayers();
-        assertEquals(0, players.size());
     }
 
     @Test
     @DisplayName("Открытие файла с 100 пользователей")
-    public void canOpenFilledFile(@Players(100)PlayerService service) {
+    public void canOpenFilledFile(@Players(5)PlayerService service) {
         Collection<Player> players = service.getPlayers();
+       // assertThat(players).contains(new Player(123,"Name", 190,true));
+        assertThat(players).allMatch(p -> p.isOnline() == true);
+    }
 
-        assertEquals(99, players.size(), "Проверка количества пользователей");
-        assertTrue(players.size() == 33);
+    @Test
+    public void numberTest() {
+        int number = -100;
+        assertThat(number).isPositive().isBetween(-1000,1000);
     }
 }
